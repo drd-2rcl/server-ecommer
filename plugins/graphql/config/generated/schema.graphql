@@ -1,3 +1,59 @@
+type Birthday {
+  _id: ID!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  date: DateTime
+}
+
+type BirthdayAggregator {
+  count: Int
+}
+
+type BirthdayConnection {
+  values: [Birthday]
+  groupBy: BirthdayGroupBy
+  aggregate: BirthdayAggregator
+}
+
+type BirthdayConnection_id {
+  key: ID
+  connection: BirthdayConnection
+}
+
+type BirthdayConnectionCreatedAt {
+  key: DateTime
+  connection: BirthdayConnection
+}
+
+type BirthdayConnectionDate {
+  key: DateTime
+  connection: BirthdayConnection
+}
+
+type BirthdayConnectionUpdatedAt {
+  key: DateTime
+  connection: BirthdayConnection
+}
+
+type BirthdayGroupBy {
+  _id: [BirthdayConnection_id]
+  createdAt: [BirthdayConnectionCreatedAt]
+  updatedAt: [BirthdayConnectionUpdatedAt]
+  date: [BirthdayConnectionDate]
+}
+
+input BirthdayInput {
+  date: DateTime
+}
+
+input createBirthdayInput {
+  data: BirthdayInput
+}
+
+type createBirthdayPayload {
+  birthday: Birthday
+}
+
 input createRestaurantInput {
   data: RestaurantInput
 }
@@ -26,6 +82,14 @@ type createUserPayload {
 The `DateTime` scalar represents a date and time following the ISO 8601 standard
 """
 scalar DateTime
+
+input deleteBirthdayInput {
+  where: InputID
+}
+
+type deleteBirthdayPayload {
+  birthday: Birthday
+}
 
 input deleteRestaurantInput {
   where: InputID
@@ -72,9 +136,12 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON
 
-union Morph = Restaurant | createRestaurantPayload | updateRestaurantPayload | deleteRestaurantPayload | RestaurantConnection | RestaurantAggregator | RestaurantGroupBy | RestaurantConnection_id | RestaurantConnectionCreatedAt | RestaurantConnectionUpdatedAt | RestaurantConnectionName | RestaurantConnectionDescription | RestaurantConnectionImage | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileGroupBy | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionHash | UploadFileConnectionSha256 | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionProvider | UsersPermissionsPermission | UsersPermissionsRole | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | UsersPermissionsUser | createUserPayload | updateUserPayload | deleteUserPayload | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole
+union Morph = Birthday | createBirthdayPayload | updateBirthdayPayload | deleteBirthdayPayload | BirthdayConnection | BirthdayAggregator | BirthdayGroupBy | BirthdayConnection_id | BirthdayConnectionCreatedAt | BirthdayConnectionUpdatedAt | BirthdayConnectionDate | Restaurant | createRestaurantPayload | updateRestaurantPayload | deleteRestaurantPayload | RestaurantConnection | RestaurantAggregator | RestaurantGroupBy | RestaurantConnection_id | RestaurantConnectionCreatedAt | RestaurantConnectionUpdatedAt | RestaurantConnectionName | RestaurantConnectionDescription | RestaurantConnectionImage | UploadFile | UploadFileConnection | UploadFileAggregator | UploadFileGroupBy | UploadFileConnection_id | UploadFileConnectionCreatedAt | UploadFileConnectionUpdatedAt | UploadFileConnectionName | UploadFileConnectionHash | UploadFileConnectionSha256 | UploadFileConnectionExt | UploadFileConnectionMime | UploadFileConnectionSize | UploadFileConnectionUrl | UploadFileConnectionProvider | UsersPermissionsPermission | UsersPermissionsRole | createRolePayload | updateRolePayload | deleteRolePayload | UsersPermissionsRoleConnection | UsersPermissionsRoleAggregator | UsersPermissionsRoleGroupBy | UsersPermissionsRoleConnection_id | UsersPermissionsRoleConnectionName | UsersPermissionsRoleConnectionDescription | UsersPermissionsRoleConnectionType | UsersPermissionsUser | createUserPayload | updateUserPayload | deleteUserPayload | UsersPermissionsUserConnection | UsersPermissionsUserAggregator | UsersPermissionsUserGroupBy | UsersPermissionsUserConnection_id | UsersPermissionsUserConnectionUsername | UsersPermissionsUserConnectionEmail | UsersPermissionsUserConnectionConfirmed | UsersPermissionsUserConnectionBlocked | UsersPermissionsUserConnectionRole
 
 type Mutation {
+  createBirthday(input: createBirthdayInput): createBirthdayPayload
+  updateBirthday(input: updateBirthdayInput): updateBirthdayPayload
+  deleteBirthday(input: deleteBirthdayInput): deleteBirthdayPayload
   createRestaurant(input: createRestaurantInput): createRestaurantPayload
   updateRestaurant(input: updateRestaurantInput): updateRestaurantPayload
   deleteRestaurant(input: deleteRestaurantInput): deleteRestaurantPayload
@@ -94,6 +161,9 @@ type Mutation {
 }
 
 type Query {
+  birthday(id: ID!): Birthday
+  birthdays(sort: String, limit: Int, start: Int, where: JSON): [Birthday]
+  birthdaysConnection(sort: String, limit: Int, start: Int, where: JSON): BirthdayConnection
   restaurant(id: ID!): Restaurant
   restaurants(sort: String, limit: Int, start: Int, where: JSON): [Restaurant]
   restaurantsConnection(sort: String, limit: Int, start: Int, where: JSON): RestaurantConnection
@@ -181,6 +251,15 @@ input RoleInput {
   type: String
   permissions: [ID]
   users: [ID]
+}
+
+input updateBirthdayInput {
+  where: InputID
+  data: BirthdayInput
+}
+
+type updateBirthdayPayload {
+  birthday: Birthday
 }
 
 input updateRestaurantInput {
